@@ -2,17 +2,51 @@ package com.example.fastcampusmysql.member.repository;
 
 import com.example.fastcampusmysql.member.entity.Member;
 import lombok.RequiredArgsConstructor;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.namedparam.SqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.stereotype.Repository;
+
+import java.sql.ResultSet;
+import java.time.LocalDateTime;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Repository
 public class MemberRepositoryJdbc implements MemberRepository {
 
     private final NamedParameterJdbcTemplate namedJdbcTemplate;
+
+    private static final String TABLE = "member";
+
+    @Override
+    public Optional<Member> findById(Long id) {
+        /*
+        select *
+        from Member
+        where id = :id
+         */
+
+        String sql = "select * from %s where id = :id".formatted(TABLE);
+        MapSqlParameterSource param = new MapSqlParameterSource()
+                .addValue("id", id);
+
+        RowMapper<Member> rowMapper = (ResultSet resultSet, int rowNum) -> Member
+                .builder()
+                .id(resultSet.getLong("id"))
+                .email(resultSet.getString("email"))
+                .nickname(resultSet.getString("nickname"))
+                .birthDay(resultSet.getObject("birthday", LocalDateTime.class))
+                .createdAt(resultSet.getObject("createdAt", LocalDateTime.class))
+                .build();
+
+        Member member = namedJdbcTemplate.queryForObject(sql, param, rowMapper);
+
+        return Optional.ofNullable(member);
+    }
 
     @Override
     public Member save(Member member) {

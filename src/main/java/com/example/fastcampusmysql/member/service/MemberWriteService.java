@@ -1,5 +1,6 @@
 package com.example.fastcampusmysql.member.service;
 
+import com.example.fastcampusmysql.member.dto.MemberDto;
 import com.example.fastcampusmysql.member.dto.MemberRegisterDto;
 import com.example.fastcampusmysql.member.entity.Member;
 import com.example.fastcampusmysql.member.repository.MemberRepository;
@@ -12,7 +13,7 @@ public class MemberWriteService {
 
     private final MemberRepository memberRepository;
 
-    public Member create(MemberRegisterDto dto) {
+    public MemberDto create(MemberRegisterDto dto) {
         /*
             목표 - 회원정보를 등록한다.(이메일, 닉네임, 생년월일)
                  - 닉네임은 10자를 넘길 수 없다.
@@ -28,6 +29,6 @@ public class MemberWriteService {
                 .birthDay(dto.birthDay())
                 .build();
 
-        return memberRepository.save(member);
+        return memberRepository.save(member).toDto();
     }
 }
