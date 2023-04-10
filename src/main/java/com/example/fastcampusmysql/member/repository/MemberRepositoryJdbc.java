@@ -39,7 +39,7 @@ public class MemberRepositoryJdbc implements MemberRepository {
                 .id(resultSet.getLong("id"))
                 .email(resultSet.getString("email"))
                 .nickname(resultSet.getString("nickname"))
-                .birthDay(resultSet.getObject("birthday", LocalDateTime.class))
+                .birthday(resultSet.getObject("birthday", LocalDateTime.class))
                 .createdAt(resultSet.getObject("createdAt", LocalDateTime.class))
                 .build();
 
@@ -57,7 +57,7 @@ public class MemberRepositoryJdbc implements MemberRepository {
         if (member.getId() == null) {
             return insert(member);
         }
-        return member;
+        return update(member);
     }
 
     private Member insert(Member member) {
@@ -74,13 +74,17 @@ public class MemberRepositoryJdbc implements MemberRepository {
                 .id(id.longValue())
                 .nickname(member.getNickname())
                 .email(member.getEmail())
-                .birthDay(member.getBirthDay())
+                .birthday(member.getBirthday())
                 .createdAt(member.getCreatedAt())
                 .build();
     }
 
     private Member update(Member member) {
-        // TODO : implemented
+
+        String sql = "update %s set email = :email, nickname = :nickname, birthday = :birthday where id = :id".formatted(TABLE);
+
+        SqlParameterSource params = new BeanPropertySqlParameterSource(member);
+        namedJdbcTemplate.update(sql, params);
         return member;
     }
 }

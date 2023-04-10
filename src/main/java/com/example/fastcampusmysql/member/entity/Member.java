@@ -11,27 +11,27 @@ import java.util.Objects;
 @Getter
 public class Member {
 
-    private Long id;
+    private final Long id;
 
     private String nickname;
 
-    private String email;
+    private final String email;
 
-    private LocalDateTime birthDay;
+    private final LocalDateTime birthday;
 
-    private LocalDateTime createdAt;
+    private final LocalDateTime createdAt;
 
     private final static Long NAME_MAX_LENGTH = 10L;
 
     @Builder
-    public Member(Long id, String nickname, String email, LocalDateTime birthDay, LocalDateTime createdAt) {
+    public Member(Long id, String nickname, String email, LocalDateTime birthday, LocalDateTime createdAt) {
 
         this.id = id;
 
         validateNickname(nickname);
         this.nickname = Objects.requireNonNull(nickname);
         this.email = Objects.requireNonNull(email);
-        this.birthDay = Objects.requireNonNull(birthDay);
+        this.birthday = Objects.requireNonNull(birthday);
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
 
@@ -48,7 +48,7 @@ public class Member {
 
     public MemberDto toDto() {
 
-        return new MemberDto(id, email, nickname, birthDay);
+        return new MemberDto(id, email, nickname, birthday);
     }
 
 }
