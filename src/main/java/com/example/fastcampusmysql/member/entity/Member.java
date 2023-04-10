@@ -28,15 +28,22 @@ public class Member {
 
         this.id = id;
 
-        Assert.isTrue(validateNickname(nickname), "최대 글자수를 초과하였습니다.");
+        validateNickname(nickname);
         this.nickname = Objects.requireNonNull(nickname);
         this.email = Objects.requireNonNull(email);
         this.birthDay = Objects.requireNonNull(birthDay);
         this.createdAt = createdAt == null ? LocalDateTime.now() : createdAt;
     }
 
-    boolean validateNickname(String nickname) {
-        return nickname.length() <= NAME_MAX_LENGTH;
+    private void validateNickname(String nickname) {
+        Assert.isTrue(nickname.length() <= NAME_MAX_LENGTH, "최대 글자수를 초과하였습니다.");
+    }
+
+    public void changeNickname(String nickname) {
+        Objects.requireNonNull(nickname);
+        validateNickname(nickname);
+
+        this.nickname = nickname;
     }
 
     public MemberDto toDto() {
